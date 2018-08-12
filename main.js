@@ -1,11 +1,31 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+const express = require('express')
+const srv = express()
+const server = require('http').createServer(srv)
+const io = require('socket.io')(server)
+
+const names = {}
+io.on('connection', function (socket) {
+  console.log('client connected')
+  socket.broadcast.emit('hi')
+  socket.on('name', (data) => {
+    names[socket.id] = {name: data}
+  })
+  socket.on('message', function (data) {
+    io.emit('message', names[socket.id].name + ': ' + data)
+  })
+})
+
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow () {
+  server.listen(3000, () => console.log('Example app listening on port 3000!'))
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
@@ -45,6 +65,9 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
+srv.use(express.static('public'))
+srv.get('/', (req, res, next) => {
+  res.send()
+})
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

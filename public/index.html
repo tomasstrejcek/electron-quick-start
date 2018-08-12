@@ -1,30 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Title</title>
 </head>
 <body>
-<h1>Hello World!</h1>
-<!-- All of the Node.js APIs are available in this renderer process. -->
-We are using Node.js
-<script>document.write(process.versions.node)</script>
-,
-Chromium
-<script>document.write(process.versions.chrome)</script>
-,
-and Electron
-<script>document.write(process.versions.electron)</script>
-.
-
-<script>
-  // You can also require other files to run in this process
-  require('./renderer.js')
-</script>
-
 <div id="div"></div>
 <textarea id="input"></textarea>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="socket.io/socket.io.js"></script>
 <script>
   var socket = io('http://localhost:3000');
 
@@ -34,8 +17,6 @@ and Electron
 
   function send (e) {
     const text = document.getElementById('input').value.trim()
-
-    console.log(e, e.code)
     if (e && e.code === 'Enter') {
       console.log('emmited ' + text)
       socket.emit('message', text)
@@ -48,7 +29,7 @@ and Electron
   })()
   socket.on('connect', function () {
     write('<b>connected</b>')
-    socket.emit('name', 'electron')
+    socket.emit('name', 'browser')
   })
   socket.on('message', function (data) {
     write(data)
